@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta
+      name="description"
+      content="DreamyDraw is a private, local-first whiteboard with infinite canvas, pan & zoom, and unlimited sessions stored on your device."
+    />
+    <title>DreamyDraw</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!-- Canvas stage -->
+    <div class="stage">
+      <canvas id="board" aria-label="DreamyDraw canvas"></canvas>
+    </div>
+
+    <div id="emptyHint" class="empty-hint">
+      <span class="big">Your canvas is empty</span>
+      Pick a tool above and start drawing — everything autosaves on this device.
+    </div>
+
+    <textarea id="textEditor" class="text-editor" spellcheck="false" aria-label="Text editor"></textarea>
+
+    <!-- Top-left: menu -->
+    <div class="island menu-island">
+      <button id="menuBtn" class="tool-btn" title="Menu — sessions, import & export">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Top-center: tools -->
+    <div class="island toolbar">
+      <div class="row" id="toolRow">
+        <button class="tool-btn active" data-tool="select" title="Selection — V or 1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l15 9-7 1.5L9 21z"/></svg>
+          <span class="kbd">1</span>
+        </button>
+        <button class="tool-btn" data-tool="hand" title="Pan — H">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V5.5a1.5 1.5 0 013 0V12m0-1.5a1.5 1.5 0 013 0V12m0-.5a1.5 1.5 0 013 0V14a6 6 0 01-6 6h-1.5a5 5 0 01-4-2l-3-4a1.5 1.5 0 012.4-1.8L8 14"/></svg>
+          <span class="kbd">H</span>
+        </button>
+        <div class="divider"></div>
+        <button class="tool-btn" data-tool="rect" title="Rectangle — R or 2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5.5" width="16" height="13" rx="2.5"/></svg>
+          <span class="kbd">2</span>
+        </button>
+        <button class="tool-btn" data-tool="diamond" title="Diamond — D or 3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l9 9-9 9-9-9z"/></svg>
+          <span class="kbd">3</span>
+        </button>
+        <button class="tool-btn" data-tool="ellipse" title="Ellipse — O or 4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="12" rx="9" ry="7.5"/></svg>
+          <span class="kbd">4</span>
+        </button>
+        <button class="tool-btn" data-tool="arrow" title="Arrow — A or 5">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18L20 6M20 6h-7M20 6v7"/></svg>
+          <span class="kbd">5</span>
+        </button>
+        <button class="tool-btn" data-tool="line" title="Line — L or 6">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 18L20 6"/></svg>
+          <span class="kbd">6</span>
+        </button>
+        <button class="tool-btn" data-tool="draw" title="Draw — P or 7">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l3.5-1 11-11a2.1 2.1 0 00-3-3l-11 11z"/><path d="M14.5 5.5l3 3"/></svg>
+          <span class="kbd">7</span>
+        </button>
+        <button class="tool-btn" data-tool="text" title="Text — T or 8">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 6h14M5 6V4.5M19 6V4.5M12 6v14M9.5 20h5"/></svg>
+          <span class="kbd">8</span>
+        </button>
+        <div class="divider"></div>
+        <button class="tool-btn" data-tool="eraser" title="Eraser — E or 9">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 16.5l7-7 5.5 5.5-3.5 3.5H8z"/><path d="M11 9.5l3.5-3.5a2 2 0 013 0l2.5 2.5a2 2 0 010 3l-3.5 3.5"/><path d="M5 20.5h15"/></svg>
+          <span class="kbd">9</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Top-right: utilities -->
+    <div class="island util-island">
+      <div class="row">
+        <button id="themeBtn" class="tool-btn" title="Toggle theme">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A8.5 8.5 0 1111.2 3a6.5 6.5 0 009.8 9.8z"/></svg>
+        </button>
+        <button id="exportPngBtn" class="text-btn" title="Export as PNG image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+          <span class="label-text">Export</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Properties panel -->
+    <div class="island props" id="propsPanel">
+      <div class="prop-group" id="strokeGroup">
+        <span class="prop-label">Stroke</span>
+        <div class="swatches" data-swatches="stroke"></div>
+      </div>
+
+      <div class="prop-group" id="fillGroup">
+        <span class="prop-label">Background</span>
+        <div class="swatches" data-swatches="fill"></div>
+      </div>
+
+      <div class="prop-group" id="fillStyleGroup">
+        <span class="prop-label">Fill style</span>
+        <div class="options" data-options="fillStyle">
+          <button class="opt" data-value="hachure" title="Hachure">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M7 16l4-4M11 17l6-6M14 17l3-3"/></svg>
+          </button>
+          <button class="opt" data-value="cross" title="Cross-hatch">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M7 16l9-9M8 17l8-8"/><path d="M8 7l8 8"/></svg>
+          </button>
+          <button class="opt" data-value="solid" title="Solid">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="prop-group" id="strokeWidthGroup">
+        <span class="prop-label">Stroke width</span>
+        <div class="options" data-options="strokeWidth">
+          <button class="opt" data-value="2" title="Thin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+          <button class="opt" data-value="4" title="Bold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+          <button class="opt" data-value="7" title="Extra bold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+        </div>
+      </div>
+
+      <div class="prop-group" id="edgesGroup">
+        <span class="prop-label">Edges</span>
+        <div class="options" data-options="edges">
+          <button class="opt" data-value="sharp" title="Sharp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 19V8a2 2 0 012-2h11"/></svg></button>
+          <button class="opt" data-value="round" title="Round"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 19v-5a8 8 0 018-8h5"/></svg></button>
+        </div>
+      </div>
+
+      <div class="prop-group" id="fontFamilyGroup">
+        <span class="prop-label">Font family</span>
+        <div class="options" data-options="fontFamily">
+          <button class="opt" data-value="Caveat" title="Handwritten" style="font-family:'Caveat';font-size:15px;font-weight:700;letter-spacing:0.01em">Aa</button>
+          <button class="opt" data-value="Inter" title="Normal" style="font-family:'Inter';font-size:13px;font-weight:700">Aa</button>
+          <button class="opt" data-value="JetBrains Mono" title="Code" style="font-family:'JetBrains Mono';font-size:11px;font-weight:600">&lt;/&gt;</button>
+          <button class="opt" data-value="Lora" title="Serif" style="font-family:'Lora';font-size:13px;font-style:italic">Aa</button>
+        </div>
+      </div>
+
+      <div class="prop-group" id="fontGroup">
+        <span class="prop-label">Font size</span>
+        <div class="options" data-options="fontSize">
+          <button class="opt" data-value="16" title="Small" style="font-size:11px;font-weight:700">S</button>
+          <button class="opt" data-value="24" title="Medium" style="font-size:14px;font-weight:700">M</button>
+          <button class="opt" data-value="36" title="Large" style="font-size:17px;font-weight:700">L</button>
+          <button class="opt" data-value="56" title="Extra large" style="font-size:20px;font-weight:700">XL</button>
+        </div>
+      </div>
+
+      <div class="prop-group" id="textAlignGroup">
+        <span class="prop-label">Text align</span>
+        <div class="options" data-options="textAlign">
+          <button class="opt" data-value="left" title="Left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h13"/></svg>
+          </button>
+          <button class="opt" data-value="center" title="Center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M7 12h10M5.5 18h13"/></svg>
+          </button>
+          <button class="opt" data-value="right" title="Right">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M10 12h10M7 18h13"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="prop-group">
+        <span class="prop-label">Opacity</span>
+        <input id="opacity" type="range" min="10" max="100" step="10" value="100" />
+      </div>
+
+      <div class="prop-group" id="layerGroup">
+        <span class="prop-label">Layers</span>
+        <div class="action-row">
+          <button class="opt" data-action="toBack" title="Send to back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="11" height="11" rx="2"/><path d="M9 20h11V9"/></svg></button>
+          <button class="opt" data-action="toFront" title="Bring to front"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 4H4v11"/></svg></button>
+        </div>
+      </div>
+
+      <div class="prop-group" id="actionGroup">
+        <span class="prop-label">Actions</span>
+        <div class="action-row">
+          <button class="opt" data-action="duplicate" title="Duplicate (Ctrl+D)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/></svg></button>
+          <button class="opt danger" data-action="delete" title="Delete (Del)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 7h14M10 7V5a1 1 0 011-1h2a1 1 0 011 1v2M6 7l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom-left: zoom + history -->
+    <div class="bottom-left">
+      <div class="zoom-island">
+        <button id="zoomOut" class="zoom-btn" title="Zoom out (Ctrl -)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg>
+        </button>
+        <button id="zoomReset" class="zoom-level" title="Reset zoom (Ctrl 0)">100%</button>
+        <button id="zoomIn" class="zoom-btn" title="Zoom in (Ctrl +)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+      <div class="history-island">
+        <button id="undoBtn" class="zoom-btn" title="Undo (Ctrl+Z)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7L4 12l5 5"/><path d="M4 12h11a5 5 0 010 10h-1"/></svg>
+        </button>
+        <button id="redoBtn" class="zoom-btn" title="Redo (Ctrl+Y)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7l5 5-5 5"/><path d="M20 12H9a5 5 0 000 10h1"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sessions drawer -->
+    <div id="drawerOverlay" class="drawer-overlay"></div>
+    <aside id="drawer" class="drawer" aria-label="Drawing sessions">
+      <div class="brand">
+        <div class="brand-mark">D</div>
+        <div>
+          <h1>Dreamydraw</h1>
+          <p>Local-first whiteboard</p>
+        </div>
+        <button id="drawerClose" class="drawer-close" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+
+      <button id="newSessionBtn" class="primary-button" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        New drawing
+      </button>
+
+      <div class="prop-group">
+        <span class="prop-label">Drawing name</span>
+        <input id="titleInput" class="ghost-button" style="height:38px;width:100%;font-size:14px;font-weight:600" aria-label="Drawing title" />
+      </div>
+
+      <div class="session-heading">
+        <span>Your sessions</span>
+        <button id="exportAllBtn" class="ghost-button" type="button">Backup all</button>
+      </div>
+      <div id="sessionList" class="session-list" aria-live="polite"></div>
+
+      <label class="import-card">
+        <input id="importFile" type="file" accept=".drmdr,.json,application/json" hidden />
+        <strong>Import backup</strong>
+        <small>Restore drawings from a .drmdr file</small>
+      </label>
+    </aside>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="./src/db.js"></script>
+    <script src="./src/app.js"></script>
+  </body>
+</html>

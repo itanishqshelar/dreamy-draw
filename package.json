@@ -1,0 +1,18 @@
+{
+  "name": "dreamydraw",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A local-first collaborative-style drawing board inspired by Excalidraw.",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "drawing",
+    "whiteboard",
+    "local-first",
+    "indexeddb"
+  ],
+  "author": "",
+  "license": "MIT"
+}
