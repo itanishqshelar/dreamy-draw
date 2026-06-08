@@ -1,4 +1,5 @@
-# DreamyDraw
+<img width="1774" height="400" alt="dreamy-draw" src="https://github.com/user-attachments/assets/7fd70fb9-9540-4dec-bc66-887241ed5463" />
+
 
 DreamyDraw is a local-first whiteboard with an Excalidraw-style interface. Drawings are stored in the user's browser with IndexedDB, so the app can keep multiple sessions without a cloud database.
 
